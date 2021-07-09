@@ -4,11 +4,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-
-import Logo from '../assets/macLogo.png';
-import EmailIcon from '../svgs/EmailIcon';
-import FormIcon from '../svgs/FormIcon';
-
+import { useRouter } from 'next/router';
 import {
   Center,
   Text,
@@ -22,9 +18,22 @@ import {
   Box,
   Select,
   Button,
+  Spinner,
+  useToast,
 } from '@chakra-ui/react';
 
+import Logo from '../assets/macLogo.png';
+import EmailIcon from '../svgs/EmailIcon';
+import FormIcon from '../svgs/FormIcon';
+import { registerStudent } from '../firebase/student';
+
 function Register() {
+  const router = useRouter();
+
+  const toast = useToast();
+
+  const [loading, setLoading] = useState(false);
+
   const [gender, setGender] = useState('');
   const [instrument, setInstrument] = useState('');
 
@@ -39,7 +48,7 @@ function Register() {
       .string()
       .email('Email must be a valid email')
       .required('Email is required to register'),
-    phoneNumber: yup
+    phone: yup
       .number('Phone number must be a number')
       .required('Phone number is required to register'),
     name: yup.string().required('Childs name is required to register'),
@@ -48,8 +57,54 @@ function Register() {
       .required('Childs age is required to register'),
   });
 
-  const handleSubmit = (values) => {
-    console.log(values);
+  const handleSubmit = async (values) => {
+    try {
+      if (gender === '')
+        return toast({
+          title: 'Gender.',
+          description: 'Gender is required to continue.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+          position: 'top',
+        });
+      if (instrument === '')
+        return toast({
+          title: 'Instrument.',
+          description: 'Instrument is required to continue.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+          position: 'top',
+        });
+
+      setLoading(true);
+
+      const data = {
+        ...values,
+        gender,
+        instrument,
+      };
+
+      await registerStudent(data);
+      router.push({
+        pathname: '/success',
+        query: data,
+      });
+
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      toast({
+        title: 'Register.',
+        description: 'Error registering user, please try again...',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
+      console.log(error);
+    }
   };
 
   return (
@@ -80,7 +135,7 @@ function Register() {
         <Formik
           initialValues={{
             email: '',
-            phoneNumber: '',
+            phone: '',
             name: '',
             age: '',
           }}
@@ -112,11 +167,9 @@ function Register() {
                   width={formWidth}
                   height={54}
                   borderRadius={15}
-                  onChange={handleChange('phoneNumber')}
+                  onChange={handleChange('phone')}
                 />
-                {errors.phoneNumber && (
-                  <Text color="#FF753A">{errors.phoneNumber}</Text>
-                )}
+                {errors.phone && <Text color="#FF753A">{errors.phone}</Text>}
               </InputGroup>
 
               <InputGroup flexDirection="column">
@@ -149,6 +202,7 @@ function Register() {
 
               <Box display="flex" flexDirection="row">
                 <Select
+                  onChange={(e) => setGender(e.target.value)}
                   placeholder="Select Gender"
                   width="48%"
                   height={54}
@@ -156,13 +210,14 @@ function Register() {
                   color="#8A94A6"
                   fontFamily="Inter"
                 >
-                  <option value="option1">Male</option>
-                  <option value="option2">Female</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
                 </Select>
 
                 <Spacer />
 
                 <Select
+                  onChange={(e) => setInstrument(e.target.value)}
                   placeholder="Set Instrument"
                   width="48%"
                   height={54}
@@ -170,14 +225,17 @@ function Register() {
                   color="#8A94A6"
                   fontFamily="Inter"
                 >
-                  <option value="option1">Guitar</option>
-                  <option value="option2">Piano</option>
-                  <option value="option2">Singing</option>
-                  <option value="option2">Violin</option>
+                  <option value="Guitar">Guitar</option>
+                  <option value="Piano">Piano</option>
+                  <option value="Singing">Drums</option>
+                  <option value="Violin">Violin</option>
+                  <option value="Voice training">Voice Training</option>
                 </Select>
               </Box>
 
               <Button
+                isLoading={loading}
+                spinner={<Spinner color="#FCF2E8" />}
                 width={{ base: '100%', md: '100%', lg: 540 }}
                 height={54}
                 borderRadius={15}
