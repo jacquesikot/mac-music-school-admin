@@ -46,7 +46,12 @@ function Success() {
             Thank you for registering with us!
           </Heading>
 
-          <Text fontFamily="Inter" marginTop={5} color="#8A94A6">
+          <Text
+            textAlign="center"
+            fontFamily="Inter"
+            marginTop={5}
+            color="#8A94A6"
+          >
             {`A confirmation email has been sent to ${router.query.email}`}
           </Text>
 
