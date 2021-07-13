@@ -26,6 +26,7 @@ import Logo from '../assets/macLogo.png';
 import EmailIcon from '../svgs/EmailIcon';
 import FormIcon from '../svgs/FormIcon';
 import { registerStudent } from '../firebase/student';
+import sendMail from './api/sendMail';
 
 function Register() {
   const router = useRouter();
@@ -99,6 +100,9 @@ function Register() {
       };
 
       await registerStudent(data);
+
+      await sendMail(data);
+
       router.push({
         pathname: '/success',
         query: data,
@@ -107,6 +111,7 @@ function Register() {
       setLoading(false);
     } catch (error) {
       setLoading(false);
+      console.log(error);
       toast({
         title: 'Register.',
         description: 'Error registering student, please try again...',
@@ -115,7 +120,6 @@ function Register() {
         isClosable: true,
         position: 'top',
       });
-      console.log(error);
     }
   };
 
@@ -271,11 +275,13 @@ function Register() {
                   color="#8a98ac"
                   fontFamily="Inter"
                 >
-                  <option value="Guitar">Guitar</option>
-                  <option value="Piano">Piano</option>
-                  <option value="Singing">Drums</option>
-                  <option value="Violin">Violin</option>
-                  <option value="Voice training">Voice Training</option>
+                  <option value="Guitar Lessons">Guitar Lessons</option>
+                  <option value="Keyboard + Piano Lessons">
+                    Keyboard + Piano Lessons
+                  </option>
+                  <option value="Drum Lessons">Drum Lessons</option>
+                  <option value="Violin Lessons">Violin Lessons</option>
+                  <option value="Singing Lessons">Singing Lessons</option>
                 </Select>
               </Box>
 
