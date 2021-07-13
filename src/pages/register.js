@@ -160,7 +160,12 @@ function Register() {
           onSubmit={handleSubmit}
         >
           {({ errors, handleChange, handleSubmit }) => (
-            <Stack spacing={5} marginTop={10} onSubmit={handleSubmit}>
+            <Stack
+              spacing={5}
+              marginTop={10}
+              onSubmit={handleSubmit}
+              width="auto"
+            >
               <InputGroup flexDirection="column">
                 <InputLeftElement marginTop={2} children={<FormIcon />} />
                 <Input

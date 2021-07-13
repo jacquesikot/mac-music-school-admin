@@ -2,7 +2,7 @@ import { db } from './index';
 
 const registerStudent = async (details) => {
   await db.collection('students').add({
-    wardName: details.wardname,
+    wardName: details.wardName,
     email: details.email,
     phone: details.phone,
     name: details.name,
