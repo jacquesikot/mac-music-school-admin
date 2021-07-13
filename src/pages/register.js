@@ -164,7 +164,7 @@ function Register() {
               spacing={5}
               marginTop={10}
               onSubmit={handleSubmit}
-              marginHorizontal={10}
+              width={{ base: '90%', md: 'auto', lg: 'auto' }}
             >
               <InputGroup flexDirection="column">
                 <InputLeftElement marginTop={2} children={<FormIcon />} />
@@ -230,7 +230,7 @@ function Register() {
                   <Input
                     fontFamily="Inter"
                     type="number"
-                    placeholder="Your Childs Age"
+                    placeholder="Childs Age"
                     height={54}
                     borderRadius={15}
                     onChange={handleChange('age')}
