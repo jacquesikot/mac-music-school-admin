@@ -164,7 +164,7 @@ function Register() {
               spacing={5}
               marginTop={10}
               onSubmit={handleSubmit}
-              width="auto"
+              marginHorizontal={10}
             >
               <InputGroup flexDirection="column">
                 <InputLeftElement marginTop={2} children={<FormIcon />} />
