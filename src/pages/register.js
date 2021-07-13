@@ -275,7 +275,9 @@ function Register() {
                   color="#8a98ac"
                   fontFamily="Inter"
                 >
-                  <option value="Guitar Lessons">Guitar Lessons</option>
+                  <option value="Bass Guitar Lessons">
+                    Bass Guitar Lessons
+                  </option>
                   <option value="Keyboard + Piano Lessons">
                     Keyboard + Piano Lessons
                   </option>
