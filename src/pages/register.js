@@ -36,6 +36,7 @@ function Register() {
 
   const [gender, setGender] = useState('');
   const [instrument, setInstrument] = useState('');
+  const [experience, setExperience] = useState('');
 
   const formWidth = {
     base: '100%',
@@ -44,6 +45,7 @@ function Register() {
   };
 
   const RegisterSchema = yup.object().shape({
+    wardName: yup.string().required('Your name is required to register'),
     email: yup
       .string()
       .email('Email must be a valid email')
@@ -77,6 +79,15 @@ function Register() {
           isClosable: true,
           position: 'top',
         });
+      if (experience === '')
+        return toast({
+          title: 'Experience.',
+          description: 'Experience is required to continue.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+          position: 'top',
+        });
 
       setLoading(true);
 
@@ -84,6 +95,7 @@ function Register() {
         ...values,
         gender,
         instrument,
+        experience,
       };
 
       await registerStudent(data);
@@ -97,7 +109,7 @@ function Register() {
       setLoading(false);
       toast({
         title: 'Register.',
-        description: 'Error registering user, please try again...',
+        description: 'Error registering student, please try again...',
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -134,6 +146,7 @@ function Register() {
 
         <Formik
           initialValues={{
+            wardName: '',
             email: '',
             phone: '',
             name: '',
@@ -144,6 +157,22 @@ function Register() {
         >
           {({ errors, handleChange, handleSubmit }) => (
             <Stack spacing={5} marginTop={10} onSubmit={handleSubmit}>
+              <InputGroup flexDirection="column">
+                <InputLeftElement marginTop={2} children={<FormIcon />} />
+                <Input
+                  fontFamily="Inter"
+                  type="text"
+                  placeholder="Your Full Name"
+                  width={formWidth}
+                  height={54}
+                  borderRadius={15}
+                  onChange={handleChange('wardName')}
+                />
+                {errors.wardName && (
+                  <Text color="#FF753A">{errors.wardName}</Text>
+                )}
+              </InputGroup>
+
               <InputGroup flexDirection="column">
                 <InputLeftElement marginTop={2} children={<EmailIcon />} />
                 <Input
@@ -177,7 +206,7 @@ function Register() {
                 <Input
                   fontFamily="Inter"
                   type="text"
-                  placeholder="Your Childs Name"
+                  placeholder="Your Childs Full Name"
                   width={formWidth}
                   height={54}
                   borderRadius={15}
@@ -186,28 +215,45 @@ function Register() {
                 {errors.name && <Text color="#FF753A">{errors.name}</Text>}
               </InputGroup>
 
-              <InputGroup flexDirection="column">
-                <InputLeftElement marginTop={2} children={<FormIcon />} />
-                <Input
-                  fontFamily="Inter"
-                  type="number"
-                  placeholder="Your Childs Age"
-                  width={formWidth}
+              <Box display="flex" flexDirection="row">
+                <InputGroup flexDirection="column" width="48%">
+                  <InputLeftElement marginTop={2} children={<FormIcon />} />
+                  <Input
+                    fontFamily="Inter"
+                    type="number"
+                    placeholder="Your Childs Age"
+                    height={54}
+                    borderRadius={15}
+                    onChange={handleChange('age')}
+                  />
+                  {errors.age && <Text color="#FF753A">{errors.age}</Text>}
+                </InputGroup>
+
+                <Spacer />
+
+                <Select
+                  onChange={(e) => setExperience(e.target.value)}
+                  placeholder="Experience"
+                  width="48%"
                   height={54}
                   borderRadius={15}
-                  onChange={handleChange('age')}
-                />
-                {errors.age && <Text color="#FF753A">{errors.age}</Text>}
-              </InputGroup>
+                  fontFamily="Inter"
+                  color="#8a98ac"
+                >
+                  <option value="Beginner">Beginner</option>
+                  <option value="Intermidiate">Intermediate</option>
+                  <option value="Advanced">Advanced</option>
+                </Select>
+              </Box>
 
               <Box display="flex" flexDirection="row">
                 <Select
                   onChange={(e) => setGender(e.target.value)}
-                  placeholder="Select Gender"
+                  placeholder="Gender"
                   width="48%"
                   height={54}
                   borderRadius={15}
-                  color="#8A94A6"
+                  color="#8a98ac"
                   fontFamily="Inter"
                 >
                   <option value="male">Male</option>
@@ -218,11 +264,11 @@ function Register() {
 
                 <Select
                   onChange={(e) => setInstrument(e.target.value)}
-                  placeholder="Set Instrument"
+                  placeholder="Instrument"
                   width="48%"
                   height={54}
                   borderRadius={15}
-                  color="#8A94A6"
+                  color="#8a98ac"
                   fontFamily="Inter"
                 >
                   <option value="Guitar">Guitar</option>
