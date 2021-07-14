@@ -21,6 +21,7 @@ import {
   Spinner,
   useToast,
 } from '@chakra-ui/react';
+import { usePaystackPayment } from 'react-paystack';
 
 import Logo from '../assets/macLogo.png';
 import EmailIcon from '../svgs/EmailIcon';
@@ -38,6 +39,18 @@ function Register() {
   const [gender, setGender] = useState('');
   const [instrument, setInstrument] = useState('');
   const [experience, setExperience] = useState('');
+  const [email, setEmail] = useState('');
+
+  const publicKey = process.env.PAYSTACK_PUBLIC_KEY;
+
+  const config = {
+    reference: new Date().getTime(),
+    email,
+    amount: 2500000,
+    publicKey,
+  };
+
+  const initializePayment = usePaystackPayment(config);
 
   const formWidth = {
     base: '100%',
@@ -99,14 +112,38 @@ function Register() {
         experience,
       };
 
-      await registerStudent(data);
+      const onSuccess = async (reference) => {
+        toast({
+          title: 'Payment.',
+          description: 'Payment Success.',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          position: 'top',
+        });
 
-      await sendMail(data);
+        router.push({
+          pathname: '/success',
+          query: data,
+        });
 
-      router.push({
-        pathname: '/success',
-        query: data,
-      });
+        await registerStudent(data);
+
+        await sendMail(data);
+      };
+
+      const onClose = () => {
+        toast({
+          title: 'Payment.',
+          description: 'Payment not successful.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+          position: 'top',
+        });
+      };
+
+      initializePayment(onSuccess, onClose);
 
       setLoading(false);
     } catch (error) {
@@ -159,155 +196,171 @@ function Register() {
           validationSchema={RegisterSchema}
           onSubmit={handleSubmit}
         >
-          {({ errors, handleChange, handleSubmit }) => (
-            <Stack
-              spacing={5}
-              marginTop={10}
-              onSubmit={handleSubmit}
-              width={{ base: '90%', md: 'auto', lg: 'auto' }}
-            >
-              <InputGroup flexDirection="column">
-                <InputLeftElement marginTop={2} children={<FormIcon />} />
-                <Input
-                  fontFamily="Inter"
-                  type="text"
-                  placeholder="Your Full Name"
-                  width={formWidth}
-                  height={54}
-                  borderRadius={15}
-                  onChange={handleChange('wardName')}
-                />
-                {errors.wardName && (
-                  <Text color="#FF753A">{errors.wardName}</Text>
-                )}
-              </InputGroup>
+          {({
+            errors,
+            handleChange,
+            handleSubmit,
+            validateForm,
+            handleBlur,
+          }) => {
+            return (
+              <Stack
+                spacing={5}
+                marginTop={10}
+                onSubmit={handleSubmit}
+                width={{ base: '90%', md: 'auto', lg: 'auto' }}
+              >
+                <InputGroup flexDirection="column">
+                  <InputLeftElement marginTop={2} children={<FormIcon />} />
+                  <Input
+                    fontFamily="Inter"
+                    type="text"
+                    placeholder="Your Full Name"
+                    width={formWidth}
+                    height={54}
+                    borderRadius={15}
+                    onChange={handleChange('wardName')}
+                    onBlur={handleBlur('wardName')}
+                  />
+                  {errors.wardName && (
+                    <Text color="#FF753A">{errors.wardName}</Text>
+                  )}
+                </InputGroup>
 
-              <InputGroup flexDirection="column">
-                <InputLeftElement marginTop={2} children={<EmailIcon />} />
-                <Input
-                  fontFamily="Inter"
-                  type="email"
-                  placeholder="Your Email"
-                  width={formWidth}
-                  height={54}
-                  borderRadius={15}
-                  onChange={handleChange('email')}
-                />
-                {errors.email && <Text color="#FF753A">{errors.email}</Text>}
-              </InputGroup>
+                <InputGroup flexDirection="column">
+                  <InputLeftElement marginTop={2} children={<EmailIcon />} />
+                  <Input
+                    fontFamily="Inter"
+                    type="email"
+                    placeholder="Your Email"
+                    width={formWidth}
+                    height={54}
+                    borderRadius={15}
+                    onChange={(e) => {
+                      handleChange('email')(e);
+                      setEmail(e.target.value);
+                    }}
+                    onBlur={handleBlur('email')}
+                  />
+                  {errors.email && <Text color="#FF753A">{errors.email}</Text>}
+                </InputGroup>
 
-              <InputGroup flexDirection="column">
-                <InputLeftElement marginTop={2} children={<FormIcon />} />
-                <Input
-                  fontFamily="Inter"
-                  type="number"
-                  placeholder="Your Phone Number"
-                  width={formWidth}
-                  height={54}
-                  borderRadius={15}
-                  onChange={handleChange('phone')}
-                />
-                {errors.phone && <Text color="#FF753A">{errors.phone}</Text>}
-              </InputGroup>
-
-              <InputGroup flexDirection="column">
-                <InputLeftElement marginTop={2} children={<FormIcon />} />
-                <Input
-                  fontFamily="Inter"
-                  type="text"
-                  placeholder="Your Childs Full Name"
-                  width={formWidth}
-                  height={54}
-                  borderRadius={15}
-                  onChange={handleChange('name')}
-                />
-                {errors.name && <Text color="#FF753A">{errors.name}</Text>}
-              </InputGroup>
-
-              <Box display="flex" flexDirection="row">
-                <InputGroup flexDirection="column" width="48%">
+                <InputGroup flexDirection="column">
                   <InputLeftElement marginTop={2} children={<FormIcon />} />
                   <Input
                     fontFamily="Inter"
                     type="number"
-                    placeholder="Childs Age"
+                    placeholder="Your Phone Number"
+                    width={formWidth}
                     height={54}
                     borderRadius={15}
-                    onChange={handleChange('age')}
+                    onChange={handleChange('phone')}
+                    onBlur={handleBlur('phone')}
                   />
-                  {errors.age && <Text color="#FF753A">{errors.age}</Text>}
+                  {errors.phone && <Text color="#FF753A">{errors.phone}</Text>}
                 </InputGroup>
 
-                <Spacer />
+                <InputGroup flexDirection="column">
+                  <InputLeftElement marginTop={2} children={<FormIcon />} />
+                  <Input
+                    fontFamily="Inter"
+                    type="text"
+                    placeholder="Your Childs Full Name"
+                    width={formWidth}
+                    height={54}
+                    borderRadius={15}
+                    onChange={handleChange('name')}
+                    onBlur={handleBlur('name')}
+                  />
+                  {errors.name && <Text color="#FF753A">{errors.name}</Text>}
+                </InputGroup>
 
-                <Select
-                  onChange={(e) => setExperience(e.target.value)}
-                  placeholder="Experience"
-                  width="48%"
+                <Box display="flex" flexDirection="row">
+                  <InputGroup flexDirection="column" width="48%">
+                    <InputLeftElement marginTop={2} children={<FormIcon />} />
+                    <Input
+                      fontFamily="Inter"
+                      type="number"
+                      placeholder="Childs Age"
+                      height={54}
+                      borderRadius={15}
+                      onChange={handleChange('age')}
+                      onBlur={handleBlur('age')}
+                    />
+                    {errors.age && <Text color="#FF753A">{errors.age}</Text>}
+                  </InputGroup>
+
+                  <Spacer />
+
+                  <Select
+                    onChange={(e) => setExperience(e.target.value)}
+                    placeholder="Experience"
+                    width="48%"
+                    height={54}
+                    borderRadius={15}
+                    fontFamily="Inter"
+                    color="#8a98ac"
+                  >
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermidiate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                  </Select>
+                </Box>
+
+                <Box display="flex" flexDirection="row">
+                  <Select
+                    onChange={(e) => setGender(e.target.value)}
+                    placeholder="Gender"
+                    width="48%"
+                    height={54}
+                    borderRadius={15}
+                    color="#8a98ac"
+                    fontFamily="Inter"
+                  >
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </Select>
+
+                  <Spacer />
+
+                  <Select
+                    onChange={(e) => setInstrument(e.target.value)}
+                    placeholder="Instrument"
+                    width="48%"
+                    height={54}
+                    borderRadius={15}
+                    color="#8a98ac"
+                    fontFamily="Inter"
+                  >
+                    <option value="Bass Guitar Lessons">
+                      Bass Guitar Lessons
+                    </option>
+                    <option value="Keyboard + Piano Lessons">
+                      Keyboard + Piano Lessons
+                    </option>
+                    <option value="Drum Lessons">Drum Lessons</option>
+                    <option value="Violin Lessons">Violin Lessons</option>
+                    <option value="Singing Lessons">Singing Lessons</option>
+                  </Select>
+                </Box>
+
+                <Button
+                  isLoading={loading}
+                  spinner={<Spinner color="#FCF2E8" />}
+                  width={{ base: '100%', md: '100%', lg: 540 }}
                   height={54}
                   borderRadius={15}
-                  fontFamily="Inter"
-                  color="#8a98ac"
+                  marginTop={10}
+                  backgroundColor="#FCF2E8"
+                  textColor="#FF753A"
+                  _hover={{ bg: '#FF753A', textColor: '#FCF2E8' }}
+                  onClick={handleSubmit}
                 >
-                  <option value="Beginner">Beginner</option>
-                  <option value="Intermidiate">Intermediate</option>
-                  <option value="Advanced">Advanced</option>
-                </Select>
-              </Box>
-
-              <Box display="flex" flexDirection="row">
-                <Select
-                  onChange={(e) => setGender(e.target.value)}
-                  placeholder="Gender"
-                  width="48%"
-                  height={54}
-                  borderRadius={15}
-                  color="#8a98ac"
-                  fontFamily="Inter"
-                >
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </Select>
-
-                <Spacer />
-
-                <Select
-                  onChange={(e) => setInstrument(e.target.value)}
-                  placeholder="Instrument"
-                  width="48%"
-                  height={54}
-                  borderRadius={15}
-                  color="#8a98ac"
-                  fontFamily="Inter"
-                >
-                  <option value="Bass Guitar Lessons">
-                    Bass Guitar Lessons
-                  </option>
-                  <option value="Keyboard + Piano Lessons">
-                    Keyboard + Piano Lessons
-                  </option>
-                  <option value="Drum Lessons">Drum Lessons</option>
-                  <option value="Violin Lessons">Violin Lessons</option>
-                  <option value="Singing Lessons">Singing Lessons</option>
-                </Select>
-              </Box>
-
-              <Button
-                isLoading={loading}
-                spinner={<Spinner color="#FCF2E8" />}
-                width={{ base: '100%', md: '100%', lg: 540 }}
-                height={54}
-                borderRadius={15}
-                marginTop={10}
-                backgroundColor="#FCF2E8"
-                textColor="#FF753A"
-                _hover={{ bg: '#FF753A', textColor: '#FCF2E8' }}
-                onClick={handleSubmit}
-              >
-                Proceed to payment
-              </Button>
-            </Stack>
-          )}
+                  Proceed to payment
+                </Button>
+              </Stack>
+            );
+          }}
         </Formik>
       </Center>
     </>
