@@ -47,7 +47,7 @@ function Register() {
     reference: new Date().getTime(),
     email,
     amount: 2500000,
-    publicKey,
+    publicKey: 'pk_test_1abcf96d8248ff7da00d4338216e36677b8a873c',
   };
 
   const initializePayment = usePaystackPayment(config);
