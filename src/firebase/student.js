@@ -1,7 +1,7 @@
 import { db } from './index';
 
 const registerStudent = async (details) => {
-  await db.collection('students').add({
+  const user = await db.collection('students').add({
     wardName: details.wardName,
     email: details.email,
     phone: details.phone,
@@ -12,6 +12,7 @@ const registerStudent = async (details) => {
     experience: details.experience,
     created_at: new Date().toISOString(),
   });
+  return user.id;
 };
 
 export { registerStudent };

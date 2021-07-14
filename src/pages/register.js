@@ -127,9 +127,9 @@ function Register() {
           query: data,
         });
 
-        await registerStudent(data);
+        const userId = await registerStudent(data);
 
-        await sendMail(data);
+        await sendMail({ ...data, id: userId.id });
       };
 
       const onClose = () => {

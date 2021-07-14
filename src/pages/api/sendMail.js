@@ -6,7 +6,7 @@ const sendMail = async (data) => {
     wardName: data.wardName,
     studentName: data.name,
     studentClass: data.instrument,
-    url: 'https://mms-admin.vercel.app/attendance',
+    url: `https://mms-admin.vercel.app/attendance?id=${data.id}&name=${data.name}`,
   });
 };
 
