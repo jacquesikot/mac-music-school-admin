@@ -58,7 +58,7 @@ function Success() {
           fontFamily="Inter"
           color="#323B4B"
         >
-          {`Set ${router.query.studentName} Attendance`}
+          {`Set ${router.query.name} Attendance`}
         </Heading>
       </Center>
     </>

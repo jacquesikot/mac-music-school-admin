@@ -129,7 +129,7 @@ function Register() {
 
         const userId = await registerStudent(data);
 
-        await sendMail({ ...data, id: userId.id });
+        await sendMail({ ...data, id: userId });
       };
 
       const onClose = () => {
