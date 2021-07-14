@@ -16,15 +16,16 @@ import {
 import Logo from '../assets/macLogo.png';
 
 function Success() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [param, setParam] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    setLoading(true);
-    if (router.query) {
+    if (router.query.id) {
       setParam(true);
     }
+
+    () => setParam(false);
   }, [router]);
 
   const handleClick = () => {
@@ -60,6 +61,40 @@ function Success() {
         >
           {`Set ${router.query.name} Attendance`}
         </Heading>
+      </Center>
+
+      <Center width={{ base: '100%', md: 'auto', lg: 'auto' }}>
+        <Center display="flex" flexDirection="column">
+          <Button
+            isLoading={loading}
+            spinner={<Spinner color="#FCF2E8" />}
+            width={{ base: '150%', md: '100%', lg: 540 }}
+            height={54}
+            borderRadius={15}
+            marginTop={10}
+            backgroundColor="#FCF2E8"
+            textColor="#FF753A"
+            _hover={{ bg: '#FF753A', textColor: '#FCF2E8' }}
+            // onClick={}
+          >
+            Log Time In
+          </Button>
+
+          <Button
+            isLoading={loading}
+            spinner={<Spinner color="#FCF2E8" />}
+            width={{ base: '150%', md: '100%', lg: 540 }}
+            height={54}
+            borderRadius={15}
+            marginTop={10}
+            backgroundColor="#FCF2E8"
+            textColor="#FF753A"
+            _hover={{ bg: '#FF753A', textColor: '#FCF2E8' }}
+            // onClick={}
+          >
+            Log Time Out
+          </Button>
+        </Center>
       </Center>
     </>
   );
