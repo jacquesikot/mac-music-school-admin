@@ -94,14 +94,6 @@ function StudentDetails() {
     setPageLoading(false);
   }, [router.query.id, deleteLoading]);
 
-  if (pageLoading) {
-    return (
-      <Center marginTop="25%">
-        <Spinner />
-      </Center>
-    );
-  }
-
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
