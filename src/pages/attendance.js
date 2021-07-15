@@ -16,16 +16,21 @@ import {
 
 import Logo from '../assets/macLogo.png';
 import { logTimeIn, logTimeOut, getTodaysRecord } from '../firebase/attendance';
-import msToTime from '../utils/msToTime';
+// import msToTime from '../utils/msToTime';
 
-function Success() {
+function Attendance() {
+  const PASSCODE = '1234';
+
   const [loadingTimeIn, setLoadingTimeIn] = useState(false);
   const [loadingTimeOut, setLoadingTimeOut] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
 
   const [param, setParam] = useState(false);
 
   const [timeIn, setTimeIn] = useState(false);
   const [timeOut, setTimeOut] = useState(false);
+
+  const [todaysRecord, setTodaysRecord] = useState({});
 
   const router = useRouter();
 
@@ -40,6 +45,7 @@ function Success() {
 
         if (record) {
           setTimeIn(true);
+          // setTodaysRecord(record);
         }
       };
 
@@ -48,20 +54,31 @@ function Success() {
 
         if (record && record[0].time_out_full !== '') {
           setTimeOut(true);
+          // setTodaysRecord(record);
         }
       };
 
       setTimeInStatus();
       setTimeOutStatus();
+      setPageLoading(false);
     }
 
     () => {
       setParam(false);
-      setTimeIn(false);
     };
   }, [router.query.id, loadingTimeIn, loadingTimeOut]);
 
   const handleLogTimeIn = async () => {
+    const code = prompt('Enter Passcode');
+    if (code !== PASSCODE)
+      return toast({
+        title: 'Attendance',
+        description: 'Passcode Error.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
     try {
       setLoadingTimeIn(true);
 
@@ -94,6 +111,16 @@ function Success() {
   };
 
   const handleLogTimeOut = async () => {
+    const code = prompt('Enter Passcode');
+    if (code !== PASSCODE)
+      return toast({
+        title: 'Attendance',
+        description: 'Passcode Error.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
     try {
       setLoadingTimeOut(true);
 
@@ -133,6 +160,14 @@ function Success() {
     );
   }
 
+  // if (pageLoading) {
+  //   return (
+  //     <Center marginTop="25%">
+  //       <Spinner />
+  //     </Center>
+  //   );
+  // }
+
   return (
     <>
       <Head>
@@ -169,7 +204,7 @@ function Success() {
             onClick={handleLogTimeIn}
             disabled={timeIn}
           >
-            {timeIn ? 'Already logged Time in' : 'Log Time In'}
+            {timeIn ? 'Already logged Time in at' : 'Log Time In'}
           </Button>
 
           <Button
@@ -191,4 +226,4 @@ function Success() {
   );
 }
 
-export default Success;
+export default Attendance;
