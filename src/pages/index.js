@@ -27,19 +27,19 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://macmusicschool.com">MMS ADMIN!</a>
-        </h1>
+        <span className={styles.logo}>
+          <Image src={Logo} alt="Vercel Logo" width={116} height={63} />
+        </span>
 
         <div className={styles.grid}>
           <a href="register" className={styles.card}>
-            <h2>Register &rarr;</h2>
+            <h2>Register</h2>
             <p>Register for the summer school</p>
           </a>
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
+          <a href="dashboard" className={styles.card}>
             <h2>Dashboard</h2>
-            <p>Access the admin Panel</p>
+            <p>Access the Admin Dashboard</p>
           </a>
 
           <a onClick={handleAttandace} className={styles.card}>
@@ -48,8 +48,8 @@ export default function Home() {
           </a>
 
           <a href="https://macmusicschool.com" className={styles.card}>
-            <h2>Website &rarr;</h2>
-            <p>View the website home page.</p>
+            <h2>Website</h2>
+            <p>View the website home page</p>
           </a>
         </div>
       </main>
@@ -60,10 +60,7 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src={Logo} alt="Vercel Logo" width={116} height={63} />
-          </span>
+          Powered by Mac Music
         </a>
       </footer>
     </div>

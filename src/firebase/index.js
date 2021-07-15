@@ -2,7 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 
 // Initialize Firebase
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: 'AIzaSyDANGoJhNzp7i0WU1OeBXwrJYxZrHuPLYI',
   authDomain: 'mac-music-school-3bc4c.firebaseapp.com',
   projectId: 'mac-music-school-3bc4c',
