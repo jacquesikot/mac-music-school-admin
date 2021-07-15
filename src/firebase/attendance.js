@@ -8,7 +8,7 @@ const logTimeIn = async (id) => {
     time_in_month: today.getMonth(),
     time_in_day: today.getDay(),
     time_in_year: today.getFullYear(),
-    time_in_ms: today.getTime(),
+    time_in_ms: today.getTime() + 3600000,
     time_in_full: today,
     time_out_month: '',
     time_out_day: '',
@@ -49,13 +49,43 @@ const logTimeOut = async (id) => {
 
   const res = await getTodaysRecord(id);
 
-  await db.collection('attendance').doc(res[0].id).update({
-    time_out_month: today.getMonth(),
-    time_out_day: today.getDay(),
-    time_out_year: today.getFullYear(),
-    time_out_ms: today.getTime(),
-    time_out_full: today,
-  });
+  await db
+    .collection('attendance')
+    .doc(res[0].id)
+    .update({
+      time_out_month: today.getMonth(),
+      time_out_day: today.getDay(),
+      time_out_year: today.getFullYear(),
+      time_out_ms: today.getTime() + 3600000,
+      time_out_full: today,
+    });
 };
 
-export { logTimeIn, logTimeOut, getTodaysRecord };
+const getStudentAttendance = async (id) => {
+  const data = [];
+
+  const attendanceRef = db.collection('attendance');
+  const snapshot = await attendanceRef.where('student_id', '==', id).get();
+  if (snapshot.empty) {
+    console.log('No matching documents.');
+    return null;
+  }
+
+  snapshot.forEach((doc) => {
+    data.push({ id: doc.id, ...doc.data() });
+  });
+
+  return data;
+};
+
+const deleteAttendance = async (id) => {
+  await db.collection('attendance').doc(id).delete();
+};
+
+export {
+  logTimeIn,
+  logTimeOut,
+  getTodaysRecord,
+  getStudentAttendance,
+  deleteAttendance,
+};
