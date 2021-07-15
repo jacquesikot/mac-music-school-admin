@@ -15,4 +15,25 @@ const registerStudent = async (details) => {
   return user.id;
 };
 
-export { registerStudent };
+const getAllStudents = async () => {
+  const data = [];
+
+  const studentsRef = db.collection('students');
+  const snapshot = await studentsRef.get();
+  if (snapshot.empty) {
+    console.log('No matching documents.');
+    return null;
+  }
+
+  snapshot.forEach((doc) => {
+    data.push({ id: doc.id, ...doc.data() });
+  });
+
+  return data;
+};
+
+const deleteStudent = async (id) => {
+  await db.collection('students').doc(id).delete();
+};
+
+export { registerStudent, getAllStudents, deleteStudent };
