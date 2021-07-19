@@ -27,7 +27,7 @@ import Logo from '../assets/macLogo.png';
 import EmailIcon from '../svgs/EmailIcon';
 import FormIcon from '../svgs/FormIcon';
 import { registerStudent } from '../firebase/student';
-import sendMail from './api/sendMail';
+import { sendMail } from './api/sendMail';
 
 function Register() {
   const router = useRouter();

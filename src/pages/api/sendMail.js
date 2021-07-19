@@ -10,4 +10,13 @@ const sendMail = async (data) => {
   });
 };
 
-export default sendMail;
+const sendTutorMail = async (data) => {
+  await axios.post('https://mms-email-server.herokuapp.com/tutorMail', {
+    recipient: data.email,
+    name: data.name,
+    class: data.instrument,
+    url: `https://mms-admin.vercel.app/attendance?id=${data.id}&name=${data.name}`,
+  });
+};
+
+export { sendMail, sendTutorMail };

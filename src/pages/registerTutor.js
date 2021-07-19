@@ -26,7 +26,7 @@ import Logo from '../assets/macLogo.png';
 import EmailIcon from '../svgs/EmailIcon';
 import FormIcon from '../svgs/FormIcon';
 import { registerTutor } from '../firebase/tutors';
-import sendMail from './api/sendMail';
+import { sendTutorMail } from './api/sendMail';
 
 function Register() {
   const router = useRouter();
@@ -86,7 +86,7 @@ function Register() {
 
       const tutorId = await registerTutor(data);
 
-      await sendMail({ ...data, id: tutorId });
+      await sendTutorMail({ ...data, id: tutorId });
 
       toast({
         title: 'Registeration.',
