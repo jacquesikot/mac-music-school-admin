@@ -31,7 +31,6 @@ import {
 import Logo from '../assets/macLogo.png';
 import { getStudentAttendance, deleteAttendance } from '../firebase/attendance';
 import msToTime from '../utils/msToTime';
-import createDate from '../utils/createDate';
 
 function StudentDetails() {
   const router = useRouter();
@@ -56,7 +55,7 @@ function StudentDetails() {
       onClose();
       toast({
         title: 'Delete',
-        description: 'Student attendance deleted successfully',
+        description: 'Tutor attendance deleted successfully',
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -119,7 +118,7 @@ function StudentDetails() {
       </Modal>
 
       <Head>
-        <title>Student Details</title>
+        <title>Tutor Details</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -136,7 +135,7 @@ function StudentDetails() {
         {pageLoading ? (
           <Spinner mt={30} />
         ) : attendance.length < 1 ? (
-          <Text mt={30}>No Attendance Record Found for this Student</Text>
+          <Text mt={30}>No Attendance Record Found for this Tutor</Text>
         ) : (
           <Table variant="simple" width="auto" marginTop="10">
             <TableCaption>{`${router.query.name}'s Attandance Records`}</TableCaption>
@@ -156,9 +155,7 @@ function StudentDetails() {
                   color="#323B4B"
                   fontWeight={600}
                 >
-                  <Td>
-                    {createDate(a.time_in_day, a.time_in_month, a.time_in_year)}
-                  </Td>
+                  <Td>{a.time_in_full.toDate().toString().substring(0, 11)}</Td>
                   <Td>{msToTime(a.time_in_ms)}</Td>
                   <Td>{msToTime(a.time_out_ms)}</Td>
                   <Td>

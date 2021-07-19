@@ -57,7 +57,7 @@ function Attendance() {
           // setTodaysRecord(record);
         }
       };
-
+      setPageLoading(true);
       setTimeInStatus();
       setTimeOutStatus();
       setPageLoading(false);
@@ -192,35 +192,39 @@ function Attendance() {
       </Center>
 
       <Center width={{ base: '100%', md: 'auto', lg: 'auto' }}>
-        <Center display="flex" flexDirection="column">
-          <Button
-            isLoading={loadingTimeIn}
-            spinner={<Spinner color="#FCF2E8" />}
-            width={{ base: '150%', md: '100%', lg: 540 }}
-            height={54}
-            borderRadius={15}
-            marginTop={10}
-            colorScheme="green"
-            onClick={handleLogTimeIn}
-            disabled={timeIn}
-          >
-            {timeIn ? 'Already logged Time in at' : 'Log Time In'}
-          </Button>
+        {pageLoading ? (
+          <Spinner />
+        ) : (
+          <Center display="flex" flexDirection="column">
+            <Button
+              isLoading={loadingTimeIn}
+              spinner={<Spinner color="#FCF2E8" />}
+              width={{ base: '150%', md: '100%', lg: 540 }}
+              height={54}
+              borderRadius={15}
+              marginTop={10}
+              colorScheme="green"
+              onClick={handleLogTimeIn}
+              disabled={timeIn}
+            >
+              {timeIn ? 'Time in Logged' : 'Log Time In'}
+            </Button>
 
-          <Button
-            isLoading={loadingTimeOut}
-            spinner={<Spinner color="#FCF2E8" />}
-            width={{ base: '150%', md: '100%', lg: 540 }}
-            height={54}
-            borderRadius={15}
-            marginTop={10}
-            colorScheme="red"
-            onClick={handleLogTimeOut}
-            disabled={timeOut}
-          >
-            {timeOut ? 'Already logged Time out' : 'Log Time Out'}
-          </Button>
-        </Center>
+            <Button
+              isLoading={loadingTimeOut}
+              spinner={<Spinner color="#FCF2E8" />}
+              width={{ base: '150%', md: '100%', lg: 540 }}
+              height={54}
+              borderRadius={15}
+              marginTop={10}
+              colorScheme="red"
+              onClick={handleLogTimeOut}
+              disabled={timeOut}
+            >
+              {timeOut ? 'Time out Logged' : 'Log Time Out'}
+            </Button>
+          </Center>
+        )}
       </Center>
     </>
   );

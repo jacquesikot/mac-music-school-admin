@@ -26,6 +26,7 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  Spinner,
 } from '@chakra-ui/react';
 
 import Logo from '../assets/macLogo.png';
@@ -47,6 +48,8 @@ function Dashboard() {
 
   const [deleteLoading, setDeleteLoading] = useState(false);
 
+  const [pageLoading, setPageLoading] = useState(true);
+
   const toast = useToast();
 
   const handleView = (id, name) => {
@@ -56,6 +59,12 @@ function Dashboard() {
         id,
         name,
       },
+    });
+  };
+
+  const handleTutorDashboard = () => {
+    router.push({
+      pathname: '/tutorDashboard',
     });
   };
 
@@ -98,6 +107,7 @@ function Dashboard() {
     });
 
     const getStudents = async () => {
+      setPageLoading(true);
       try {
         const students = await getAllStudents();
         if (students === null) {
@@ -105,6 +115,7 @@ function Dashboard() {
         } else {
           setStudents(students);
         }
+        setPageLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -184,6 +195,10 @@ function Dashboard() {
           />
           <Spacer />
 
+          <Button mr={5} onClick={handleTutorDashboard} colorScheme="blue">
+            Tutor Dashboard
+          </Button>
+
           <Button onClick={handleLogout} colorScheme="red">
             Log Out
           </Button>
@@ -197,56 +212,62 @@ function Dashboard() {
             All Students
           </Text>
 
-          <Table variant="simple" width="auto" marginTop="10">
-            <TableCaption>All Registered Students</TableCaption>
-            <Thead>
-              <Tr>
-                <Th>Name</Th>
-                <Th>Contact</Th>
-                <Th>Gender</Th>
-                <Th>Lessons</Th>
-                <Th>Actions</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {students.map((s) => (
-                <Tr
-                  key={s.id}
-                  fontFamily="Inter"
-                  color="#323B4B"
-                  fontWeight={600}
-                >
-                  <Td>{capitalize(s.name)}</Td>
-                  <Td>{s.phone}</Td>
-                  <Td>{capitalize(s.gender)}</Td>
-                  <Td>{s.instrument}</Td>
-                  <Td>
-                    <Box>
-                      <Button
-                        onClick={() => handleView(s.id, s.name)}
-                        marginRight="3"
-                        colorScheme="green"
-                      >
-                        View
-                      </Button>
-                      <Button marginRight="3" colorScheme="blue">
-                        Send Email
-                      </Button>
-                      <Button
-                        colorScheme="red"
-                        onClick={() => {
-                          onOpen();
-                          setDeleteId(s.id);
-                        }}
-                      >
-                        Delete
-                      </Button>
-                    </Box>
-                  </Td>
+          {pageLoading ? (
+            <Spinner mt={30} />
+          ) : students.legth < 1 ? (
+            <Text mt={30}>No Student Recors Found</Text>
+          ) : (
+            <Table variant="simple" width="auto" marginTop="10">
+              <TableCaption>All Registered Students</TableCaption>
+              <Thead>
+                <Tr>
+                  <Th>Name</Th>
+                  <Th>Contact</Th>
+                  <Th>Gender</Th>
+                  <Th>Lessons</Th>
+                  <Th>Actions</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
+              </Thead>
+              <Tbody>
+                {students.map((s) => (
+                  <Tr
+                    key={s.id}
+                    fontFamily="Inter"
+                    color="#323B4B"
+                    fontWeight={600}
+                  >
+                    <Td>{capitalize(s.name)}</Td>
+                    <Td>{s.phone}</Td>
+                    <Td>{capitalize(s.gender)}</Td>
+                    <Td>{s.instrument}</Td>
+                    <Td>
+                      <Box>
+                        <Button
+                          onClick={() => handleView(s.id, s.name)}
+                          marginRight="3"
+                          colorScheme="green"
+                        >
+                          View
+                        </Button>
+                        <Button marginRight="3" colorScheme="blue">
+                          Send Email
+                        </Button>
+                        <Button
+                          colorScheme="red"
+                          onClick={() => {
+                            onOpen();
+                            setDeleteId(s.id);
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </Box>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          )}
         </Center>
       </>
     );
