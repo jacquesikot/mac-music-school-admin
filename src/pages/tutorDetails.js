@@ -98,7 +98,7 @@ function StudentDetails() {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Delete Student Attendance</ModalHeader>
+          <ModalHeader>Delete Tutors Attendance</ModalHeader>
           <ModalCloseButton />
           <ModalBody>Are you sure you want to delete this record?</ModalBody>
 

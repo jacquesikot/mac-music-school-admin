@@ -156,9 +156,7 @@ function StudentDetails() {
                   color="#323B4B"
                   fontWeight={600}
                 >
-                  <Td>
-                    {createDate(a.time_in_day, a.time_in_month, a.time_in_year)}
-                  </Td>
+                  <Td>{a.time_in_full.toDate().toString().substring(0, 11)}</Td>
                   <Td>{msToTime(a.time_in_ms)}</Td>
                   <Td>{msToTime(a.time_out_ms)}</Td>
                   <Td>

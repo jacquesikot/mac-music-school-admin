@@ -369,9 +369,7 @@ function Register() {
                   height={54}
                   borderRadius={15}
                   marginTop={10}
-                  backgroundColor="#FCF2E8"
-                  textColor="#FF753A"
-                  _hover={{ bg: '#FF753A', textColor: '#FCF2E8' }}
+                  colorScheme="orange"
                   onClick={handleSubmit}
                 >
                   Complete Registeration

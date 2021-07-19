@@ -19,7 +19,7 @@ function Success() {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push('https://www.google.com/');
+    router.push('https://www.macmusicschool.com/');
   };
   return (
     <>
@@ -53,6 +53,16 @@ function Success() {
             color="#8A94A6"
           >
             {`A confirmation email has been sent to ${router.query.email}`}
+          </Text>
+
+          <Text
+            textAlign="center"
+            fontFamily="Inter"
+            marginTop={5}
+            color="#8A94A6"
+          >
+            Please check your spam and promotion folders alongside your primary
+            email.
           </Text>
 
           <Button
