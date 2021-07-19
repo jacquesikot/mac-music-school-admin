@@ -42,10 +42,10 @@ export default function Home() {
             <p>Access the Admin Dashboard</p>
           </a>
 
-          {/* <a onClick={handleAttandace} className={styles.card}>
-            <h2>Attendance</h2>
-            <p>Log time in and out of students</p>
-          </a> */}
+          <a href="registerTutor" className={styles.card}>
+            <h2>Tutors</h2>
+            <p>Register portal for tutors</p>
+          </a>
 
           <a href="https://macmusicschool.com" className={styles.card}>
             <h2>Website</h2>

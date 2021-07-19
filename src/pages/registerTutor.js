@@ -21,12 +21,11 @@ import {
   Spinner,
   useToast,
 } from '@chakra-ui/react';
-// import { usePaystackPayment } from 'react-paystack';
 
 import Logo from '../assets/macLogo.png';
 import EmailIcon from '../svgs/EmailIcon';
 import FormIcon from '../svgs/FormIcon';
-import { registerStudent } from '../firebase/student';
+import { registerTutor } from '../firebase/tutors';
 import sendMail from './api/sendMail';
 
 function Register() {
@@ -38,19 +37,6 @@ function Register() {
 
   const [gender, setGender] = useState('');
   const [instrument, setInstrument] = useState('');
-  const [experience, setExperience] = useState('');
-  const [email, setEmail] = useState('');
-
-  // const publicKey = process.env.PAYSTACK_PUBLIC_KEY;
-
-  // const config = {
-  //   reference: new Date().getTime(),
-  //   email,
-  //   amount: 2500000,
-  //   publicKey: 'pk_test_1abcf96d8248ff7da00d4338216e36677b8a873c',
-  // };
-
-  // const initializePayment = usePaystackPayment(config);
 
   const formWidth = {
     base: '100%',
@@ -59,7 +45,7 @@ function Register() {
   };
 
   const RegisterSchema = yup.object().shape({
-    wardName: yup.string().required('Your name is required to register'),
+    name: yup.string().required('Your name is required to register'),
     email: yup
       .string()
       .email('Email must be a valid email')
@@ -67,10 +53,6 @@ function Register() {
     phone: yup
       .number('Phone number must be a number')
       .required('Phone number is required to register'),
-    name: yup.string().required('Childs name is required to register'),
-    age: yup
-      .number('Age must be a number')
-      .required('Childs age is required to register'),
   });
 
   const handleSubmit = async (values) => {
@@ -93,15 +75,6 @@ function Register() {
           isClosable: true,
           position: 'top',
         });
-      if (experience === '')
-        return toast({
-          title: 'Experience.',
-          description: 'Experience is required to continue.',
-          status: 'error',
-          duration: 3000,
-          isClosable: true,
-          position: 'top',
-        });
 
       setLoading(true);
 
@@ -109,49 +82,15 @@ function Register() {
         ...values,
         gender,
         instrument,
-        experience,
       };
 
-      // const onSuccess = async (reference) => {
-      //   toast({
-      //     title: 'Payment.',
-      //     description: 'Payment Success.',
-      //     status: 'success',
-      //     duration: 3000,
-      //     isClosable: true,
-      //     position: 'top',
-      //   });
+      const tutorId = await registerTutor(data);
 
-      //   router.push({
-      //     pathname: '/success',
-      //     query: data,
-      //   });
-
-      //   const userId = await registerStudent(data);
-
-      //   await sendMail({ ...data, id: userId });
-      // };
-
-      // const onClose = () => {
-      //   toast({
-      //     title: 'Payment.',
-      //     description: 'Payment not successful.',
-      //     status: 'error',
-      //     duration: 3000,
-      //     isClosable: true,
-      //     position: 'top',
-      //   });
-      // };
-
-      // initializePayment(onSuccess, onClose);
-
-      const userId = await registerStudent(data);
-
-      await sendMail({ ...data, id: userId });
+      await sendMail({ ...data, id: tutorId });
 
       toast({
         title: 'Registeration.',
-        description: 'Students Registeration Successfull.',
+        description: 'Tutors Registeration Successfull.',
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -169,7 +108,7 @@ function Register() {
       console.log(error);
       toast({
         title: 'Register.',
-        description: 'Error registering student, please try again...',
+        description: 'Error registering tutor, please try again...',
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -181,7 +120,7 @@ function Register() {
   return (
     <>
       <Head>
-        <title>Register</title>
+        <title>Register Tutor</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -196,7 +135,7 @@ function Register() {
         marginBottom={50}
       >
         <Heading fontFamily="Inter" color="#323B4B">
-          Getting Started
+          Register Tutor
         </Heading>
 
         <Text fontFamily="Inter" marginTop={5} color="#8A94A6">
@@ -205,22 +144,14 @@ function Register() {
 
         <Formik
           initialValues={{
-            wardName: '',
+            name: '',
             email: '',
             phone: '',
-            name: '',
-            age: '',
           }}
           validationSchema={RegisterSchema}
           onSubmit={handleSubmit}
         >
-          {({
-            errors,
-            handleChange,
-            handleSubmit,
-            validateForm,
-            handleBlur,
-          }) => {
+          {({ errors, handleChange, handleSubmit, handleBlur }) => {
             return (
               <Stack
                 spacing={5}
@@ -237,12 +168,10 @@ function Register() {
                     width={formWidth}
                     height={54}
                     borderRadius={15}
-                    onChange={handleChange('wardName')}
-                    onBlur={handleBlur('wardName')}
+                    onChange={handleChange('name')}
+                    onBlur={handleBlur('name')}
                   />
-                  {errors.wardName && (
-                    <Text color="#FF753A">{errors.wardName}</Text>
-                  )}
+                  {errors.name && <Text color="#FF753A">{errors.name}</Text>}
                 </InputGroup>
 
                 <InputGroup flexDirection="column">
@@ -254,10 +183,7 @@ function Register() {
                     width={formWidth}
                     height={54}
                     borderRadius={15}
-                    onChange={(e) => {
-                      handleChange('email')(e);
-                      setEmail(e.target.value);
-                    }}
+                    onChange={handleChange('email')}
                     onBlur={handleBlur('email')}
                   />
                   {errors.email && <Text color="#FF753A">{errors.email}</Text>}
@@ -277,53 +203,6 @@ function Register() {
                   />
                   {errors.phone && <Text color="#FF753A">{errors.phone}</Text>}
                 </InputGroup>
-
-                <InputGroup flexDirection="column">
-                  <InputLeftElement marginTop={2} children={<FormIcon />} />
-                  <Input
-                    fontFamily="Inter"
-                    type="text"
-                    placeholder="Your Childs Full Name"
-                    width={formWidth}
-                    height={54}
-                    borderRadius={15}
-                    onChange={handleChange('name')}
-                    onBlur={handleBlur('name')}
-                  />
-                  {errors.name && <Text color="#FF753A">{errors.name}</Text>}
-                </InputGroup>
-
-                <Box display="flex" flexDirection="row">
-                  <InputGroup flexDirection="column" width="48%">
-                    <InputLeftElement marginTop={2} children={<FormIcon />} />
-                    <Input
-                      fontFamily="Inter"
-                      type="number"
-                      placeholder="Childs Age"
-                      height={54}
-                      borderRadius={15}
-                      onChange={handleChange('age')}
-                      onBlur={handleBlur('age')}
-                    />
-                    {errors.age && <Text color="#FF753A">{errors.age}</Text>}
-                  </InputGroup>
-
-                  <Spacer />
-
-                  <Select
-                    onChange={(e) => setExperience(e.target.value)}
-                    placeholder="Experience"
-                    width="48%"
-                    height={54}
-                    borderRadius={15}
-                    fontFamily="Inter"
-                    color="#8a98ac"
-                  >
-                    <option value="Beginner">Beginner</option>
-                    <option value="Intermidiate">Intermediate</option>
-                    <option value="Advanced">Advanced</option>
-                  </Select>
-                </Box>
 
                 <Box display="flex" flexDirection="row">
                   <Select
