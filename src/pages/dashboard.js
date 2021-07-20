@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import firebase from 'firebase';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
   Spacer,
@@ -34,6 +35,7 @@ import Login from '../pages/login';
 import { logOutUser } from '../firebase/auth';
 import { getAllStudents, deleteStudent } from '../firebase/student';
 import capitalize from '../utils/capitalize';
+import { sendMail } from './api/sendMail';
 
 function Dashboard() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -65,6 +67,12 @@ function Dashboard() {
   const handleTutorDashboard = () => {
     router.push({
       pathname: '/tutorDashboard',
+    });
+  };
+
+  const handleHome = () => {
+    router.push({
+      pathname: '/dashboard',
     });
   };
 
@@ -148,6 +156,38 @@ function Dashboard() {
     }
   };
 
+  const handleSendmail = async (data) => {
+    const info = {
+      recipient: data.email,
+      wardName: data.wardName,
+      studentName: data.name,
+      studentClass: data.instrument,
+    };
+
+    try {
+      await sendMail({ ...info });
+
+      toast({
+        title: 'Send Email',
+        description: 'Email Sent!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: 'Send Email',
+        description: 'Error sending email',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
+    }
+  };
+
   if (!isLoggedIn) {
     return <Login />;
   } else {
@@ -187,12 +227,15 @@ function Dashboard() {
           display="flex"
           alignItems="center"
         >
-          <Image
-            src={Logo}
-            alt="Mac music school logo"
-            width={116}
-            height={63}
-          />
+          <Link href="/" passHref>
+            <Image
+              src={Logo}
+              alt="Mac music school logo"
+              width={116}
+              height={63}
+            />
+          </Link>
+
           <Spacer />
 
           <Button mr={5} onClick={handleTutorDashboard} colorScheme="blue">
@@ -223,6 +266,7 @@ function Dashboard() {
                 <Tr>
                   <Th>Name</Th>
                   <Th>Contact</Th>
+                  <Th>Email</Th>
                   <Th>Gender</Th>
                   <Th>Lessons</Th>
                   <Th>Actions</Th>
@@ -238,6 +282,7 @@ function Dashboard() {
                   >
                     <Td>{capitalize(s.name)}</Td>
                     <Td>{s.phone}</Td>
+                    <Td>{s.email}</Td>
                     <Td>{capitalize(s.gender)}</Td>
                     <Td>{s.instrument}</Td>
                     <Td>
@@ -249,7 +294,11 @@ function Dashboard() {
                         >
                           View
                         </Button>
-                        <Button marginRight="3" colorScheme="blue">
+                        <Button
+                          onClick={() => handleSendmail(s)}
+                          marginRight="3"
+                          colorScheme="blue"
+                        >
                           Send Email
                         </Button>
                         <Button

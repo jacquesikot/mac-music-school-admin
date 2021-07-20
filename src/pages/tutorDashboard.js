@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import {
   Spacer,
   Center,
@@ -172,7 +173,14 @@ function Dashboard() {
         display="flex"
         alignItems="center"
       >
-        <Image src={Logo} alt="Mac music school logo" width={116} height={63} />
+        <Link href="/" passHref>
+          <Image
+            src={Logo}
+            alt="Mac music school logo"
+            width={116}
+            height={63}
+          />
+        </Link>
         <Spacer />
 
         <Button mr={5} onClick={handleStudentDashboard} colorScheme="blue">
@@ -203,6 +211,7 @@ function Dashboard() {
               <Tr>
                 <Th>Name</Th>
                 <Th>Contact</Th>
+                <Th>Email</Th>
                 <Th>Gender</Th>
                 <Th>Lesson</Th>
                 <Th>Actions</Th>
@@ -218,6 +227,7 @@ function Dashboard() {
                 >
                   <Td>{s.name}</Td>
                   <Td>{s.phone}</Td>
+                  <Td>{s.email}</Td>
                   <Td>{s.gender}</Td>
                   <Td>{s.instrument}</Td>
                   <Td>
