@@ -294,13 +294,13 @@ function Dashboard() {
                         >
                           View
                         </Button>
-                        <Button
+                        {/* <Button
                           onClick={() => handleSendmail(s)}
                           marginRight="3"
                           colorScheme="blue"
                         >
                           Send Email
-                        </Button>
+                        </Button> */}
                         <Button
                           colorScheme="red"
                           onClick={() => {

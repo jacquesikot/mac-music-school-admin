@@ -32,7 +32,7 @@ import {
 import Logo from '../assets/macLogo.png';
 import { logOutUser } from '../firebase/auth';
 import { getAllTutors, deleteTutor } from '../firebase/tutors';
-import capitalize from '../utils/capitalize';
+import { sendTutorMail } from './api/sendMail';
 
 function Dashboard() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -129,6 +129,37 @@ function Dashboard() {
       toast({
         title: 'Authentication',
         description: 'Logout error',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
+    }
+  };
+
+  const handleSendmail = async (data) => {
+    const info = {
+      recipient: data.email,
+      name: data.name,
+      studentClass: data.instrument,
+    };
+
+    try {
+      await sendTutorMail({ ...info });
+
+      toast({
+        title: 'Send Email',
+        description: 'Email Sent!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: 'Send Email',
+        description: 'Error sending email',
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -239,9 +270,13 @@ function Dashboard() {
                       >
                         View
                       </Button>
-                      <Button marginRight="3" colorScheme="blue">
+                      {/* <Button
+                        onClick={() => handleSendmail(s)}
+                        marginRight="3"
+                        colorScheme="blue"
+                      >
                         Send Email
-                      </Button>
+                      </Button> */}
                       <Button
                         colorScheme="red"
                         onClick={() => {
