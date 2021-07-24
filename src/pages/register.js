@@ -39,6 +39,7 @@ function Register() {
   const [gender, setGender] = useState('');
   const [instrument, setInstrument] = useState('');
   const [experience, setExperience] = useState('');
+  const [birthMonth, setBirthMonth] = useState('');
   const [email, setEmail] = useState('');
 
   // const publicKey = process.env.PAYSTACK_PUBLIC_KEY;
@@ -67,10 +68,12 @@ function Register() {
     phone: yup
       .number('Phone number must be a number')
       .required('Phone number is required to register'),
-    name: yup.string().required('Childs name is required to register'),
-    age: yup
-      .number('Age must be a number')
-      .required('Childs age is required to register'),
+    name: yup.string().required('Students name is required to register'),
+    age: yup.number('Age must be a number').required('Age is required'),
+    address: yup.string().required('Address is required to register'),
+    birthday: yup
+      .number('Birthday must be a number')
+      .required('Birthday is required'),
   });
 
   const handleSubmit = async (values) => {
@@ -102,6 +105,15 @@ function Register() {
           isClosable: true,
           position: 'top',
         });
+      if (birthMonth === '')
+        return toast({
+          title: 'Birthday.',
+          description: 'Birth Month is required to continue.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+          position: 'top',
+        });
 
       setLoading(true);
 
@@ -110,6 +122,7 @@ function Register() {
         gender,
         instrument,
         experience,
+        birthMonth,
       };
 
       // const onSuccess = async (reference) => {
@@ -210,17 +223,13 @@ function Register() {
             phone: '',
             name: '',
             age: '',
+            address: '',
+            birthday: '',
           }}
           validationSchema={RegisterSchema}
           onSubmit={handleSubmit}
         >
-          {({
-            errors,
-            handleChange,
-            handleSubmit,
-            validateForm,
-            handleBlur,
-          }) => {
+          {({ errors, handleChange, handleSubmit, handleBlur }) => {
             return (
               <Stack
                 spacing={5}
@@ -228,6 +237,21 @@ function Register() {
                 onSubmit={handleSubmit}
                 width={{ base: '90%', md: 'auto', lg: 'auto' }}
               >
+                <InputGroup flexDirection="column">
+                  <InputLeftElement marginTop={2} children={<FormIcon />} />
+                  <Input
+                    fontFamily="Inter"
+                    type="text"
+                    placeholder="Students Full Name"
+                    width={formWidth}
+                    height={54}
+                    borderRadius={15}
+                    onChange={handleChange('name')}
+                    onBlur={handleBlur('name')}
+                  />
+                  {errors.name && <Text color="#FF753A">{errors.name}</Text>}
+                </InputGroup>
+
                 <InputGroup flexDirection="column">
                   <InputLeftElement marginTop={2} children={<FormIcon />} />
                   <Input
@@ -283,14 +307,16 @@ function Register() {
                   <Input
                     fontFamily="Inter"
                     type="text"
-                    placeholder="Your Childs Full Name"
+                    placeholder="Your Address"
                     width={formWidth}
                     height={54}
                     borderRadius={15}
-                    onChange={handleChange('name')}
-                    onBlur={handleBlur('name')}
+                    onChange={handleChange('address')}
+                    onBlur={handleBlur('address')}
                   />
-                  {errors.name && <Text color="#FF753A">{errors.name}</Text>}
+                  {errors.address && (
+                    <Text color="#FF753A">{errors.address}</Text>
+                  )}
                 </InputGroup>
 
                 <Box display="flex" flexDirection="row">
@@ -299,7 +325,50 @@ function Register() {
                     <Input
                       fontFamily="Inter"
                       type="number"
-                      placeholder="Childs Age"
+                      placeholder="Birth day"
+                      height={54}
+                      borderRadius={15}
+                      onChange={handleChange('birthday')}
+                      onBlur={handleBlur('birthday')}
+                    />
+                    {errors.birthday && (
+                      <Text color="#FF753A">{errors.birthday}</Text>
+                    )}
+                  </InputGroup>
+
+                  <Spacer />
+
+                  <Select
+                    onChange={(e) => setBirthMonth(e.target.value)}
+                    placeholder="Birth month"
+                    width="48%"
+                    height={54}
+                    borderRadius={15}
+                    color="#8a98ac"
+                    fontFamily="Inter"
+                  >
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                  </Select>
+                </Box>
+
+                <Box display="flex" flexDirection="row">
+                  <InputGroup flexDirection="column" width="48%">
+                    <InputLeftElement marginTop={2} children={<FormIcon />} />
+                    <Input
+                      fontFamily="Inter"
+                      type="number"
+                      placeholder="Students Age"
                       height={54}
                       borderRadius={15}
                       onChange={handleChange('age')}
