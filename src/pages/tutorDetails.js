@@ -129,7 +129,7 @@ function StudentDetails() {
 
       <Center flexDirection="column">
         <Heading fontFamily="Inter" color="#323B4B">
-          {`${router.query.name}'s Attandance Records`}
+          {`${router.query.name}'s Attendance Records`}
         </Heading>
 
         {pageLoading ? (
@@ -138,7 +138,7 @@ function StudentDetails() {
           <Text mt={30}>No Attendance Record Found for this Tutor</Text>
         ) : (
           <Table variant="simple" width="auto" marginTop="10">
-            <TableCaption>{`${router.query.name}'s Attandance Records`}</TableCaption>
+            <TableCaption>{`${router.query.name}'s Attendance Records`}</TableCaption>
             <Thead>
               <Tr>
                 <Th>Date</Th>
